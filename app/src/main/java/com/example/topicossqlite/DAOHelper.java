@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import androidx.annotation.ContentView;
 import androidx.annotation.Nullable;
 
 public class DAOHelper extends SQLiteOpenHelper {
@@ -31,7 +30,7 @@ public class DAOHelper extends SQLiteOpenHelper {
 
     public Persona buscarPersona (int ID){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor datos = db.rawQuery("SELECT * FROM " +TABLA +" WHERE ID_PER="+ID,null);
+        Cursor datos = db.rawQuery("SELECT * FROM " +TABLA +" WHERE ID_PER=" +ID,null);
         Persona p =null;
         if(datos.moveToNext()){
             p = new Persona();
@@ -50,7 +49,9 @@ public class DAOHelper extends SQLiteOpenHelper {
         cv.put("NOM_PER", p.getNombre());
         cv.put("APE_PER", p.getApellido());
         cv.put("EDA_PER", p.getEdad());
-        long res = db.insert(TABLA, null,cv);
+        long res = db.insert(TABLA,null,cv);
         db.close();
+        return res;
     }
+
 }

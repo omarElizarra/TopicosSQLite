@@ -1,5 +1,6 @@
 package com.example.topicossqlite;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         lvDatos = (ListView)  findViewById(R.id.lvDatos);
 
         buscarPersona();
+        agregarPersona();
         estadoArranque();
     }
 
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         btnEliminar.setEnabled(false);
         tvMensaje.setVisibility(View.INVISIBLE);
         lvDatos.setVisibility(View.INVISIBLE);
-        Toast.makeText(MainActivity.this,"Aplicacion realizada para la materia: \n Topicos aplicados a la Telematica \n\n\t Bienvenido!", Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this,"Aplicacion realizada para la materia: \nTopicos aplicados a la Telematica \n\n\t Bienvenido!", Toast.LENGTH_LONG).show();
     }
 
     public void buscarPersona(){
@@ -62,8 +64,9 @@ public class MainActivity extends AppCompatActivity {
                 }else{
                     int ID = Integer.parseInt(etID.getText().toString());
                     Persona p = d.buscarPersona(ID);
+                   // Toast.makeText(MainActivity.this,"ID: "+ID, Toast.LENGTH_SHORT).show();
                     if (p == null){
-                        Toast.makeText(MainActivity.this,"No se encuentran registros con ese ID. Puede almacenarlo", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this,"No se encuentran registros para el ID: " +ID +"\nPuede almacenarlo", Toast.LENGTH_SHORT).show();
                         btnAgregar.setEnabled(true);
                         btnActualizar.setEnabled(false);
                         btnEliminar.setEnabled(false);
@@ -80,5 +83,51 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public void agregarPersona(){
+        btnAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(etID.getText().toString().isEmpty() ||
+                        etNombre.getText().toString().isEmpty() ||
+                        etEdad.getText().toString().isEmpty() ||
+                        etApellido.getText().toString().isEmpty() ){
+                    Toast.makeText(MainActivity.this,"Datos faltantes, Por favor rellene todos los campos",Toast.LENGTH_LONG).show();
+                }else{
+                    Persona p = new Persona();
+                    p.setID(Integer.parseInt(etID.getText().toString()));
+                    p.setNombre(etNombre.getText().toString());
+                    p.setApellido(etApellido.getText().toString());
+                    p.setEdad(Integer.parseInt(etEdad.getText().toString()));
+                    long res = d.agregarPersona(p);
+                    if(res != -1){
+                        StringBuffer buffer = new StringBuffer();
+                        buffer.append("ID:\t\t\t"+p.getID()+"\n");
+                        buffer.append("Nombre:\t"+p.getNombre()+"\n");
+                        buffer.append("Apellido:\t"+p.getApellido()+"\n");
+                        buffer.append("Edad:\t\t\t"+p.getEdad());
+                        display("Se ha agregado el registro correctamente", buffer.toString());
+//                        Toast.makeText(MainActivity.this,"Los datos han sido agregados correctamente",Toast.LENGTH_LONG).show();
+                    }else{
+                        Toast.makeText(MainActivity.this,"El ID ya existe",Toast.LENGTH_LONG).show();
+                        etID.setText("");
+                        etID.requestFocus();
+                    }
+                }
+
+            }
+        });
+
+    }
+
+    public void display (String titulo, String mensaje) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(titulo);
+        builder.setMessage(mensaje);
+        builder.setIcon(R.drawable.updatebutton);
+        builder.show();
+
     }
 }
