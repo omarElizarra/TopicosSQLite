@@ -5,11 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -112,12 +115,11 @@ public class MainActivity extends AppCompatActivity {
                     long res = d.agregarPersona(p);
                     if(res != -1){
                         StringBuffer buffer = new StringBuffer();
-                        buffer.append("ID:\t\t\t"+p.getID()+"\n");
-                        buffer.append("Nombre:\t"+p.getNombre()+"\n");
-                        buffer.append("Apellido:\t"+p.getApellido()+"\n");
-                        buffer.append("Edad:\t\t\t"+p.getEdad());
+                        buffer.append("ID:      "+p.getID()+"\n");
+                        buffer.append("Nombre:  "+p.getNombre()+"\n");
+                        buffer.append("Apellido:"+p.getApellido()+"\n");
+                        buffer.append("Edad:    "+p.getEdad());
                         display("Se ha agregado el registro correctamente", buffer.toString());
-                        limpiarCampos();
 //                        Toast.makeText(MainActivity.this,"Los datos han sido agregados correctamente",Toast.LENGTH_LONG).show();
                     }else{
                         Toast.makeText(MainActivity.this,"El ID ya existe",Toast.LENGTH_LONG).show();
@@ -138,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
         builder.setMessage(mensaje);
         builder.setIcon(R.drawable.updatebutton);
         builder.show();
+        listarDatos();
+        limpiarCampos();
     }
 
     public void eliminarPersona(){
@@ -147,11 +151,29 @@ public class MainActivity extends AppCompatActivity {
                 if(etID.getText().toString().isEmpty()){
                     Toast.makeText(MainActivity.this,"No ID ", Toast.LENGTH_LONG).show();
                 }else{
+
                     int ID = Integer.parseInt(etID.getText().toString());
                     int res = d.eliminarPersona(ID);
+
+                    //reciclado
+                    Persona p = new Persona();
+                    p.setID(Integer.parseInt(etID.getText().toString()));
+                    p.setNombre(etNombre.getText().toString());
+                    p.setApellido(etApellido.getText().toString());
+                    p.setEdad(Integer.parseInt(etEdad.getText().toString()));
+                    //int res = d.modificarPersona(p);
+
+
                     if(res == 1){
-                        Toast.makeText(MainActivity.this, "El Registro fue eliminado!", Toast.LENGTH_SHORT).show();
-                        limpiarCampos();
+                        StringBuffer buffer = new StringBuffer();
+                        buffer.append("ID:\t\t\t"+p.getID()+"\n");
+                        buffer.append("Nombre:\t"+p.getNombre()+"\n");
+                        buffer.append("Apellido:\t"+p.getApellido()+"\n");
+                        buffer.append("Edad:\t\t\t"+p.getEdad());
+                        display("El registro ha sido borrado exitosamente", buffer.toString());
+                        //Toast.makeText(MainActivity.this, "El Registro fue eliminado!", Toast.LENGTH_SHORT).show();
+                        //limpiarCampos();
+
                     }else{
                         Toast.makeText(MainActivity.this, "No se encontro un gesitro con el ID: " +ID, Toast.LENGTH_SHORT).show();
                         etID.setText("");
@@ -189,7 +211,6 @@ public class MainActivity extends AppCompatActivity {
                             buffer.append("Apellido: " +p.getApellido() +"\n");
                             buffer.append("Edad: "+p.getEdad());
                             display("Se han actualizado los datos para el ID " +p.getID(),buffer.toString());
-                            limpiarCampos();
                         }else{
                             Toast.makeText(MainActivity.this, "No se encuntras coincidencias para el ID: "+p.getID() , Toast.LENGTH_SHORT).show();
                             etID.setText("");
@@ -200,5 +221,25 @@ public class MainActivity extends AppCompatActivity {
                 
             }
         });
+    }
+
+    public void listarDatos(){
+        tvMensaje.setVisibility(View.VISIBLE);
+        lvDatos.setVisibility(View.VISIBLE);
+        System.out.println("Mensaje");
+
+        ArrayList<Persona> lista = d.obtenerPersonal();
+
+        if(!lista.isEmpty()){
+
+            ArrayAdapter<Persona> adapter = new ArrayAdapter<Persona>(this,android.R.layout.simple_list_item_1,lista);
+            lvDatos.setAdapter(adapter);
+
+        }else{
+            // por implementar
+        }
+
+
+
     }
 }

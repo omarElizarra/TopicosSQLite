@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+
 public class DAOHelper extends SQLiteOpenHelper {
 
     private static String BD = "BD_Test1";
@@ -71,6 +73,28 @@ public class DAOHelper extends SQLiteOpenHelper {
         int res = db.update(TABLA,cv,"ID_PER=?", new String[]{Integer.toString(p.getID())});
         db.close();
         return res;
+    }
+
+    public  ArrayList<Persona> obtenerPersonal(){
+        //SQLiteDatabase db = this.getReadableDatabase();
+        //Cambio por Writable
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor datos = db.rawQuery("SELECT * FROM " +TABLA +" ORDER BY ID_PER ASC",null);
+        ArrayList<Persona> lista = new ArrayList<Persona>();
+        while (datos.moveToNext()){
+            Persona p = new Persona();
+            p.setID(datos.getInt(0));
+            p.setNombre( datos.getString(1));
+            p.setApellido(datos.getString(2));
+            p.setEdad(datos.getInt(3));
+            lista.add(p);
+        }
+        db.close();
+        return lista;
+
+
+
+
     }
 
 }
