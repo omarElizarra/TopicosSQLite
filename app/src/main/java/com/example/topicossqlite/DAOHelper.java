@@ -1,10 +1,12 @@
 package com.example.topicossqlite;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import androidx.annotation.ContentView;
 import androidx.annotation.Nullable;
 
 public class DAOHelper extends SQLiteOpenHelper {
@@ -18,7 +20,7 @@ public class DAOHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String crearTabla = "CREATE TABLE " + TABLA + "(ID_PER INTEGER PRIMARY KEY, NOM_PERSONA TEXT, APE_PER TEXT, EDA_PER INTEGER)";
+        String crearTabla = "CREATE TABLE " + TABLA + "(ID_PER INTEGER PRIMARY KEY, NOM_PER TEXT, APE_PER TEXT, EDA_PER INTEGER)";
         db.execSQL(crearTabla);
     }
 
@@ -39,5 +41,16 @@ public class DAOHelper extends SQLiteOpenHelper {
         }
         db.close();
         return p;
+    }
+
+    public long agregarPersona(Persona p){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("ID_PER", p.getID());
+        cv.put("NOM_PER", p.getNombre());
+        cv.put("APE_PER", p.getApellido());
+        cv.put("EDA_PER", p.getEdad());
+        long res = db.insert(TABLA, null,cv);
+        db.close();
     }
 }

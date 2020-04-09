@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
         btnEliminar.setEnabled(false);
         tvMensaje.setVisibility(View.INVISIBLE);
         lvDatos.setVisibility(View.INVISIBLE);
+        Toast.makeText(MainActivity.this,"Aplicacion realizada para la materia: \n Topicos aplicados a la Telematica \n\n\t Bienvenido!", Toast.LENGTH_LONG).show();
     }
 
     public void buscarPersona(){
