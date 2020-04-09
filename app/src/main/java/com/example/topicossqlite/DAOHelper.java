@@ -54,4 +54,23 @@ public class DAOHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public int eliminarPersona(int ID){
+        SQLiteDatabase db = this.getWritableDatabase();
+        int res = db.delete(TABLA,"ID_PER=?",new String[]{Integer.toString(ID)});
+        db.close();
+        return res;
+    }
+
+    public int modificarPersona(Persona p){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put("ID_PER", p.getID());
+        cv.put("NOM_PER", p.getNombre());
+        cv.put("APE_PER", p.getApellido());
+        cv.put("EDA_PER", p.getEdad());
+        int res = db.update(TABLA,cv,"ID_PER=?", new String[]{Integer.toString(p.getID())});
+        db.close();
+        return res;
+    }
+
 }
