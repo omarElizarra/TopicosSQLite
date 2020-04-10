@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,6 +66,17 @@ public class MainActivity extends AppCompatActivity {
         tvMensaje.setVisibility(View.INVISIBLE);
         lvDatos.setVisibility(View.INVISIBLE);
         Toast.makeText(MainActivity.this,"Aplicacion realizada para la materia: \nTopicos aplicados a la Telematica \n\n\t Bienvenido!", Toast.LENGTH_LONG).show();
+    }
+
+    public void display (String titulo, String mensaje) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(titulo);
+        builder.setMessage(mensaje);
+        builder.setIcon(R.drawable.updatebutton);
+        builder.show();
+        listarDatos();
+        limpiarCampos();
     }
 
     public void buscarPersona(){
@@ -131,17 +143,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    public void display (String titulo, String mensaje) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(titulo);
-        builder.setMessage(mensaje);
-        builder.setIcon(R.drawable.updatebutton);
-        builder.show();
-        listarDatos();
-        limpiarCampos();
     }
 
     public void eliminarPersona(){
@@ -224,19 +225,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void listarDatos(){
-        tvMensaje.setVisibility(View.VISIBLE);
-        lvDatos.setVisibility(View.VISIBLE);
-        System.out.println("Mensaje");
-
-        ArrayList<Persona> lista = d.obtenerPersonal();
-
+        final ArrayList<Persona> lista = d.obtenerPersonal();
         if(!lista.isEmpty()){
-
+            tvMensaje.setVisibility(View.VISIBLE);
+            lvDatos.setVisibility(View.VISIBLE);
             ArrayAdapter<Persona> adapter = new ArrayAdapter<Persona>(this,android.R.layout.simple_list_item_1,lista);
             lvDatos.setAdapter(adapter);
 
+            lvDatos.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Persona p = lista.get(position);
+                    etID.setText(Integer.toString(p.getID()));
+                    etNombre.setText(p.getNombre());
+                    etApellido.setText(p.getApellido());
+                    etEdad.setText(Integer.toString(p.getEdad()));
+                    btnAgregar.setEnabled(false);
+                    btnActualizar.setEnabled(true);
+                    btnEliminar.setEnabled(true);
+                }
+            });
+
+
+
         }else{
-            // por implementar
+            tvMensaje.setVisibility(View.INVISIBLE);
+            lvDatos.setVisibility(View.INVISIBLE);
         }
 
 
